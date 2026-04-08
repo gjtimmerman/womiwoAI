@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BridgeGameCalculator.Shared", "BridgeGameCalculator.Shared\BridgeGameCalculator.Shared.csproj", "{39086310-AF20-421E-B5C8-6CCEF6C021D6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BridgeGameCalculator.Server", "BridgeGameCalculator.Server\BridgeGameCalculator.Server.csproj", "{07CABCF5-1400-4447-87C5-DAD1F1A18AD5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BridgeGameCalculator.Client", "BridgeGameCalculator.Client\BridgeGameCalculator.Client.csproj", "{ACC52D65-638B-4D52-A5C0-9BA58CF47397}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BridgeGameCalculator.Tests", "..\tests\BridgeGameCalculator.Tests\BridgeGameCalculator.Tests.csproj", "{66883EC3-C374-42B2-BD96-E3F5588C241F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{39086310-AF20-421E-B5C8-6CCEF6C021D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39086310-AF20-421E-B5C8-6CCEF6C021D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39086310-AF20-421E-B5C8-6CCEF6C021D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39086310-AF20-421E-B5C8-6CCEF6C021D6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{07CABCF5-1400-4447-87C5-DAD1F1A18AD5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07CABCF5-1400-4447-87C5-DAD1F1A18AD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07CABCF5-1400-4447-87C5-DAD1F1A18AD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07CABCF5-1400-4447-87C5-DAD1F1A18AD5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ACC52D65-638B-4D52-A5C0-9BA58CF47397}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACC52D65-638B-4D52-A5C0-9BA58CF47397}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACC52D65-638B-4D52-A5C0-9BA58CF47397}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACC52D65-638B-4D52-A5C0-9BA58CF47397}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66883EC3-C374-42B2-BD96-E3F5588C241F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66883EC3-C374-42B2-BD96-E3F5588C241F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66883EC3-C374-42B2-BD96-E3F5588C241F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66883EC3-C374-42B2-BD96-E3F5588C241F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,7 @@
+.board-row {
+    cursor: pointer;
+}
+
+.board-row:hover {
+    background-color: #f5f5f5;
+}

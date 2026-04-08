@@ -1,0 +1,51 @@
+.hand-diagram {
+    display: grid;
+    grid-template-areas:
+        ".     hand-north ."
+        "hand-west  board-info  hand-east"
+        ".     hand-south .";
+    grid-template-columns: 1fr auto 1fr;
+    grid-template-rows: auto auto auto;
+    gap: 1rem;
+    max-width: 700px;
+    margin: 1.5rem 0;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    padding: 1rem;
+}
+
+.hand-north {
+    grid-area: hand-north;
+    justify-self: center;
+}
+
+.hand-west {
+    grid-area: hand-west;
+    justify-self: end;
+}
+
+.board-info {
+    grid-area: board-info;
+    text-align: center;
+    align-self: center;
+    padding: 0.5rem 1rem;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    line-height: 1.8;
+}
+
+.hand-east {
+    grid-area: hand-east;
+    justify-self: start;
+}
+
+.hand-south {
+    grid-area: hand-south;
+    justify-self: center;
+}
+
+.info-board {
+    font-weight: 700;
+    font-size: 1rem;
+}

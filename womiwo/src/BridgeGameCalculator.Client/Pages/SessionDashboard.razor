@@ -1,0 +1,45 @@
+@page "/session"
+@inject SessionState SessionState
+@inject NavigationManager Navigation
+
+@if (SessionState.CurrentAnalysis is null)
+{
+    <p>No session loaded. <a href="/">Upload a PBN file</a>.</p>
+}
+else
+{
+    var analysis = SessionState.CurrentAnalysis;
+
+    <h1>Session: @analysis.SourceFile</h1>
+
+    <SessionSummary Analysis="analysis" />
+
+    <table class="board-table">
+        <thead>
+            <tr>
+                <th>Board</th>
+                <th>Vul</th>
+                <th>Contract</th>
+                <th>Result</th>
+                <th>Score</th>
+                <th>Par</th>
+                <th>Par Score</th>
+                <th>IMP Delta</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var board in analysis.BoardResults)
+            {
+                <BoardRow Board="board" OnBoardClicked="HandleBoardClicked" />
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private void HandleBoardClicked(int boardNumber)
+    {
+        // FEAT-005: navigate to board detail
+        Navigation.NavigateTo($"/board/{boardNumber}");
+    }
+}

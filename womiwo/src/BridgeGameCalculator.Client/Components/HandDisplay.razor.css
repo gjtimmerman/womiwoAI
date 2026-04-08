@@ -1,0 +1,17 @@
+.hand-display {
+    font-family: 'Segoe UI', sans-serif;
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+
+.suit-row {
+    white-space: nowrap;
+}
+
+.suit-red {
+    color: #d32f2f;
+}
+
+.suit-black {
+    color: #212121;
+}

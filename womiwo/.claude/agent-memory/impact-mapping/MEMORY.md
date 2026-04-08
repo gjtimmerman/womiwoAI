@@ -1,0 +1,1 @@
+- [BridgeGameCalculator Impact Map](project_bridge_game_calculator.md) — MVP: 6 features for post-tournament DD analysis, single persona, two goals (session speed + single-hand analysis)

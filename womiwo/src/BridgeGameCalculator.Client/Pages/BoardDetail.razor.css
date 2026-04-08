@@ -1,0 +1,66 @@
+.board-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    gap: 1rem;
+}
+
+.nav-back {
+    font-size: 0.9rem;
+    color: #495057;
+    text-decoration: none;
+}
+
+.nav-back:hover {
+    text-decoration: underline;
+}
+
+.nav-arrows {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.nav-arrows button {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+    cursor: pointer;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    background-color: #fff;
+}
+
+.nav-arrows button:hover:not(:disabled) {
+    background-color: #f8f9fa;
+}
+
+.nav-arrows button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.board-detail-info {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.detail-row {
+    display: flex;
+    gap: 1rem;
+    align-items: baseline;
+    border-bottom: 1px solid #f0f0f0;
+    padding: 0.4rem 0;
+}
+
+.detail-label {
+    font-weight: 600;
+    min-width: 8rem;
+    color: #495057;
+    font-size: 0.9rem;
+}
+
+.detail-value {
+    font-size: 1rem;
+}

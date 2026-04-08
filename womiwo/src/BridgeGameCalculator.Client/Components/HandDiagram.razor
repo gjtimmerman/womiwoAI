@@ -1,0 +1,26 @@
+<div class="hand-diagram">
+    <div class="hand-north">
+        <HandDisplay Hand="@Hands[Seat.North]" />
+    </div>
+    <div class="hand-west">
+        <HandDisplay Hand="@Hands[Seat.West]" />
+    </div>
+    <div class="board-info">
+        <div class="info-board">Board @BoardNumber</div>
+        <div class="info-dealer">Dlr: @DealerLabel</div>
+        <div class="info-vul">Vul: @VulnerabilityLabel</div>
+    </div>
+    <div class="hand-east">
+        <HandDisplay Hand="@Hands[Seat.East]" />
+    </div>
+    <div class="hand-south">
+        <HandDisplay Hand="@Hands[Seat.South]" />
+    </div>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public Dictionary<Seat, ParsedHand> Hands { get; set; } = default!;
+    [Parameter, EditorRequired] public int    BoardNumber        { get; set; }
+    [Parameter, EditorRequired] public string DealerLabel        { get; set; } = default!;
+    [Parameter, EditorRequired] public string VulnerabilityLabel { get; set; } = default!;
+}

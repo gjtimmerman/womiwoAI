@@ -1,0 +1,315 @@
+@page "/hand"
+@using BridgeGameCalculator.Client.Models
+@using BridgeGameCalculator.Shared.Dtos
+@using BridgeGameCalculator.Shared.Parsing
+@using BridgeGameCalculator.Shared.Validation
+@using BridgeGameCalculator.Shared.Json
+@inject HttpClient Http
+@inject SessionState SessionState
+@inject NavigationManager Navigation
+
+<h1>Single-Hand Analysis</h1>
+
+<div class="form-grid">
+    <div class="form-row">
+        <label>Dealer</label>
+        <select @onchange="e => _model.Dealer = Enum.Parse<Seat>(e.Value!.ToString()!)">
+            @foreach (Seat s in Enum.GetValues<Seat>())
+            {
+                <option value="@s" selected="@(_model.Dealer == s)">@s</option>
+            }
+        </select>
+    </div>
+
+    <div class="form-row">
+        <label>Vulnerability</label>
+        <select @onchange="e => _model.Vulnerability = Enum.Parse<Vulnerability>(e.Value!.ToString()!)">
+            <option value="@Vulnerability.None"       selected="@(_model.Vulnerability == Vulnerability.None)">None</option>
+            <option value="@Vulnerability.NorthSouth" selected="@(_model.Vulnerability == Vulnerability.NorthSouth)">NS</option>
+            <option value="@Vulnerability.EastWest"   selected="@(_model.Vulnerability == Vulnerability.EastWest)">EW</option>
+            <option value="@Vulnerability.Both"       selected="@(_model.Vulnerability == Vulnerability.Both)">Both</option>
+        </select>
+    </div>
+</div>
+
+<div class="hands-section">
+    <HandInput Seat="Seat.North" Value="@_model.NorthHand"
+               ValueChanged="v => HandleHandChanged(Seat.North, v)"
+               ErrorMessage="@GetError("North")"
+               Disabled="@_isSubmitting" />
+    <HandInput Seat="Seat.East"  Value="@_model.EastHand"
+               ValueChanged="v => HandleHandChanged(Seat.East, v)"
+               ErrorMessage="@GetError("East")"
+               Disabled="@_isSubmitting" />
+    <HandInput Seat="Seat.South" Value="@_model.SouthHand"
+               ValueChanged="v => HandleHandChanged(Seat.South, v)"
+               ErrorMessage="@GetError("South")"
+               Disabled="@_isSubmitting" />
+    <HandInput Seat="Seat.West"  Value="@_model.WestHand"
+               ValueChanged="v => HandleHandChanged(Seat.West, v)"
+               ErrorMessage="@GetError("West")"
+               Disabled="@_isSubmitting" />
+</div>
+
+<p class="format-help">Format: <code>AKQ.JT9.87.654</code> or <code>S:AKQ H:JT9 D:87 C:654</code>. Use T for Ten.</p>
+
+@if (GetError("Cards") is string cardsError)
+{
+    <p class="error-message">@cardsError</p>
+}
+
+<details class="contract-section">
+    <summary>Optional: Actual Contract</summary>
+    <div class="contract-grid">
+        <div class="form-row">
+            <label>Level</label>
+            <select @onchange="e => { _model.ContractLevel = ParseNullableInt(e.Value?.ToString()); ValidateContract(); }">
+                <option value="">—</option>
+                @for (int i = 1; i <= 7; i++)
+                {
+                    int lvl = i;
+                    <option value="@lvl" selected="@(_model.ContractLevel == lvl)">@lvl</option>
+                }
+            </select>
+        </div>
+
+        <div class="form-row">
+            <label>Strain</label>
+            <select @onchange="e => { _model.ContractStrain = ParseNullableStrain(e.Value?.ToString()); ValidateContract(); }">
+                <option value="">—</option>
+                @foreach (Strain s in Enum.GetValues<Strain>())
+                {
+                    <option value="@s" selected="@(_model.ContractStrain == s)">@s</option>
+                }
+            </select>
+        </div>
+
+        <div class="form-row">
+            <label>Doubled</label>
+            <select @onchange="e => { _model.Doubled = ParseNullableDoubleState(e.Value?.ToString()); ValidateContract(); }">
+                <option value="">Undoubled</option>
+                <option value="@DoubleState.Doubled"    selected="@(_model.Doubled == DoubleState.Doubled)">Doubled (X)</option>
+                <option value="@DoubleState.Redoubled"  selected="@(_model.Doubled == DoubleState.Redoubled)">Redoubled (XX)</option>
+            </select>
+        </div>
+
+        <div class="form-row">
+            <label>Declarer</label>
+            <select @onchange="e => { _model.Declarer = ParseNullableSeat(e.Value?.ToString()); ValidateContract(); }">
+                <option value="">—</option>
+                @foreach (Seat s in Enum.GetValues<Seat>())
+                {
+                    <option value="@s" selected="@(_model.Declarer == s)">@s</option>
+                }
+            </select>
+        </div>
+
+        <div class="form-row">
+            <label>Tricks made</label>
+            <select @onchange="e => { _model.Result = ParseNullableInt(e.Value?.ToString()); ValidateContract(); }">
+                <option value="">—</option>
+                @for (int i = 0; i <= 13; i++)
+                {
+                    int tricks = i;
+                    <option value="@tricks" selected="@(_model.Result == tricks)">@tricks</option>
+                }
+            </select>
+        </div>
+    </div>
+
+    @foreach (var key in new[] { "ContractLevel", "ContractStrain", "Declarer", "Result" })
+    {
+        @if (GetError(key) is string err)
+        {
+            <p class="error-message">@err</p>
+        }
+    }
+</details>
+
+<div class="submit-row">
+    <button @onclick="HandleSubmit" disabled="@_isSubmitting" class="analyze-button">
+        @(_isSubmitting ? "Analysing…" : "Analyse")
+    </button>
+</div>
+
+@if (_generalError is not null)
+{
+    <p class="error-message" role="alert">@_generalError</p>
+}
+
+@code {
+    private readonly SingleHandFormModel _model = new();
+    private readonly Dictionary<string, HandParseResult> _parsed = new();
+    private readonly Dictionary<string, string> _errors = new();
+    private bool    _isSubmitting;
+    private string? _generalError;
+
+    private string? GetError(string key) =>
+        _errors.TryGetValue(key, out var e) ? e : null;
+
+    // -------------------------------------------------------------------------
+    // Inline validation
+    // -------------------------------------------------------------------------
+
+    private void HandleHandChanged(Seat seat, string value)
+    {
+        string key = seat.ToString();
+
+        switch (seat)
+        {
+            case Seat.North: _model.NorthHand = value; break;
+            case Seat.East:  _model.EastHand  = value; break;
+            case Seat.South: _model.SouthHand = value; break;
+            case Seat.West:  _model.WestHand  = value; break;
+        }
+
+        var result = HandParser.Parse(value);
+        if (!result.IsSuccess)
+        {
+            _errors[key] = result.Error!;
+            _parsed.Remove(key);
+        }
+        else
+        {
+            _errors.Remove(key);
+            _parsed[key] = result;
+        }
+
+        // Cross-hand check when all four parse OK
+        _errors.Remove("Cards");
+        if (_parsed.Count == 4)
+        {
+            var vr = HandValidator.Validate(
+                _parsed["North"].AllCards, _parsed["East"].AllCards,
+                _parsed["South"].AllCards, _parsed["West"].AllCards);
+            if (!vr.IsValid && vr.Errors.TryGetValue("Cards", out var cardErr))
+                _errors["Cards"] = cardErr;
+        }
+    }
+
+    private void ValidateContract()
+    {
+        foreach (var k in new[] { "ContractLevel", "ContractStrain", "Declarer", "Result" })
+            _errors.Remove(k);
+
+        var ci = BuildContractInfo();
+        if (ci is null) return;
+
+        var vr = HandValidator.Validate(null, null, null, null, ci);
+        foreach (var (k, v) in vr.Errors)
+            if (k is "ContractLevel" or "ContractStrain" or "Declarer" or "Result")
+                _errors[k] = v;
+    }
+
+    // -------------------------------------------------------------------------
+    // Submit
+    // -------------------------------------------------------------------------
+
+    private async Task HandleSubmit()
+    {
+        _generalError = null;
+
+        // Full validation pass
+        _errors.Clear();
+        _parsed.Clear();
+
+        foreach (var (seat, value) in new[]
+        {
+            (Seat.North, _model.NorthHand),
+            (Seat.East,  _model.EastHand),
+            (Seat.South, _model.SouthHand),
+            (Seat.West,  _model.WestHand),
+        })
+        {
+            var r = HandParser.Parse(value);
+            if (!r.IsSuccess)  _errors[seat.ToString()] = r.Error!;
+            else               _parsed[seat.ToString()] = r;
+        }
+
+        var ci = BuildContractInfo();
+        var vr = HandValidator.Validate(
+            _parsed.TryGetValue("North", out var n) ? n.AllCards : null,
+            _parsed.TryGetValue("East",  out var e) ? e.AllCards : null,
+            _parsed.TryGetValue("South", out var s) ? s.AllCards : null,
+            _parsed.TryGetValue("West",  out var w) ? w.AllCards : null,
+            ci);
+
+        foreach (var (k, v) in vr.Errors)
+            _errors[k] = v;
+
+        if (_errors.Count > 0) return;
+
+        _isSubmitting = true;
+        try
+        {
+            var request = new SingleHandRequest(
+                NorthHand:      _parsed["North"].PbnHand!,
+                EastHand:       _parsed["East"].PbnHand!,
+                SouthHand:      _parsed["South"].PbnHand!,
+                WestHand:       _parsed["West"].PbnHand!,
+                Dealer:         _model.Dealer,
+                Vulnerability:  _model.Vulnerability,
+                ContractLevel:  _model.ContractLevel,
+                ContractStrain: _model.ContractStrain,
+                Doubled:        _model.Doubled,
+                Declarer:       _model.Declarer,
+                Result:         _model.Result);
+
+            var response = await Http.PostAsJsonAsync("/api/hands/analyze", request,
+                JsonDefaults.Options);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content
+                    .ReadFromJsonAsync<SingleHandAnalysisResult>(JsonDefaults.Options);
+
+                SessionState.IsSingleHandSession = true;
+                SessionState.CurrentSession      = result!.Session;
+                SessionState.CurrentAnalysis     = result.Analysis;
+                Navigation.NavigateTo("/boards/1");
+            }
+            else
+            {
+                _generalError = "Analysis failed. Please check the hand data and try again.";
+            }
+        }
+        catch (Exception ex)
+        {
+            _generalError = $"An error occurred: {ex.Message}";
+        }
+        finally
+        {
+            _isSubmitting = false;
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // Helpers
+    // -------------------------------------------------------------------------
+
+    private ContractInfo? BuildContractInfo()
+    {
+        if (!_model.ContractLevel.HasValue && !_model.ContractStrain.HasValue
+            && !_model.Declarer.HasValue && !_model.Result.HasValue)
+            return null;
+
+        return new ContractInfo(
+            _model.ContractLevel,
+            _model.ContractStrain,
+            _model.Doubled,
+            _model.Declarer,
+            _model.Result);
+    }
+
+    private static int? ParseNullableInt(string? value) =>
+        int.TryParse(value, out var i) ? i : null;
+
+    private static Strain? ParseNullableStrain(string? value) =>
+        Enum.TryParse<Strain>(value, out var s) ? s : null;
+
+    private static DoubleState? ParseNullableDoubleState(string? value) =>
+        Enum.TryParse<DoubleState>(value, out var d) ? d : null;
+
+    private static Seat? ParseNullableSeat(string? value) =>
+        Enum.TryParse<Seat>(value, out var s) ? s : null;
+}

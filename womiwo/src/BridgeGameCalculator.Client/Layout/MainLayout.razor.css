@@ -1,0 +1,31 @@
+.app-nav {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 0.6rem 1.5rem;
+    background-color: #1b2a3b;
+    color: white;
+    margin-bottom: 1.5rem;
+}
+
+.nav-brand {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: white;
+    text-decoration: none;
+    margin-right: 1rem;
+}
+
+.nav-link {
+    color: #adb5bd;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.nav-link:hover {
+    color: white;
+}
+
+.app-main {
+    padding: 0 1.5rem 2rem;
+}

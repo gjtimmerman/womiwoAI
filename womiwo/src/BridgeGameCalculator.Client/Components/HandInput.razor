@@ -1,0 +1,33 @@
+<div class="hand-input-group">
+    <label class="hand-label">@SeatLabel</label>
+    <input class="hand-text-input @(ErrorMessage is null ? "" : "input-error")"
+           type="text"
+           value="@Value"
+           @onchange="HandleChange"
+           placeholder="AKQ.JT9.87.654 or S:AKQ H:JT9 D:87 C:654"
+           disabled="@Disabled" />
+    @if (ErrorMessage is not null)
+    {
+        <span class="validation-error">@ErrorMessage</span>
+    }
+</div>
+
+@code {
+    [Parameter, EditorRequired] public Seat   Seat    { get; set; }
+    [Parameter]                 public string Value   { get; set; } = "";
+    [Parameter] public EventCallback<string>  ValueChanged { get; set; }
+    [Parameter] public string?                ErrorMessage { get; set; }
+    [Parameter] public bool                   Disabled     { get; set; }
+
+    private string SeatLabel => Seat switch
+    {
+        Seat.North => "North",
+        Seat.East  => "East",
+        Seat.South => "South",
+        Seat.West  => "West",
+        _          => "?"
+    };
+
+    private Task HandleChange(ChangeEventArgs e) =>
+        ValueChanged.InvokeAsync(e.Value?.ToString() ?? "");
+}

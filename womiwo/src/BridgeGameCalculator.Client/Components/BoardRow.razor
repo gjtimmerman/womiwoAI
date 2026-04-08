@@ -1,0 +1,33 @@
+@using BridgeGameCalculator.Shared.Models
+
+<tr @onclick="HandleClick" role="button" class="board-row">
+    <td>@Board.BoardNumber</td>
+    <td>@Board.VulnerabilityLabel</td>
+    <td>@(Board.ContractPlayed ?? "Pass")</td>
+    <td>@(Board.TricksResult ?? "N/A")</td>
+    <td>@(Board.ActualScore?.ToString() ?? "N/A")</td>
+    <td>@(Board.ParContractLabel ?? "Pass")</td>
+    <td>@Board.ParScore</td>
+    <td class="delta-value @DeltaCssClass">@DeltaText</td>
+</tr>
+
+@code {
+    [Parameter, EditorRequired] public BoardResult Board { get; set; } = default!;
+    [Parameter] public EventCallback<int> OnBoardClicked { get; set; }
+
+    private string DeltaCssClass => Board.ImpDelta switch
+    {
+        > 0 => "delta-positive",
+        < 0 => "delta-negative",
+        _   => "delta-neutral"
+    };
+
+    private string DeltaText => Board.ImpDelta switch
+    {
+        null          => "N/A",
+        var v when v > 0 => $"+{v}",
+        var v         => $"{v}"
+    };
+
+    private Task HandleClick() => OnBoardClicked.InvokeAsync(Board.BoardNumber);
+}

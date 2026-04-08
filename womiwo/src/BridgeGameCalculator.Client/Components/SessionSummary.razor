@@ -1,0 +1,39 @@
+<div class="session-summary">
+    <div class="summary-item">
+        <span class="summary-label">Total IMPs</span>
+        <span class="summary-value @TotalCssClass">@TotalImpText</span>
+    </div>
+    <div class="summary-item">
+        <span class="summary-label">Boards</span>
+        <span class="summary-value">@Analysis.BoardCount</span>
+    </div>
+    <div class="summary-item">
+        <span class="summary-label">Positive</span>
+        <span class="summary-value delta-positive">@Analysis.PositiveCount</span>
+    </div>
+    <div class="summary-item">
+        <span class="summary-label">Negative</span>
+        <span class="summary-value delta-negative">@Analysis.NegativeCount</span>
+    </div>
+    <div class="summary-item">
+        <span class="summary-label">Par</span>
+        <span class="summary-value delta-neutral">@Analysis.ParCount</span>
+    </div>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public SessionAnalysisResult Analysis { get; set; } = default!;
+
+    private string TotalCssClass => Analysis.TotalImps switch
+    {
+        > 0 => "delta-positive",
+        < 0 => "delta-negative",
+        _   => "delta-neutral"
+    };
+
+    private string TotalImpText => Analysis.TotalImps switch
+    {
+        var v when v > 0 => $"+{v}",
+        var v            => $"{v}"
+    };
+}

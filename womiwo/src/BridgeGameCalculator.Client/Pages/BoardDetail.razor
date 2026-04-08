@@ -1,0 +1,120 @@
+@page "/boards/{BoardNumber:int}"
+@inject ISessionStateService SessionStateService
+@inject NavigationManager Navigation
+
+@if (_viewModel is null)
+{
+    <p>Board @BoardNumber not found. <a href="/session">Back to session</a>.</p>
+}
+else
+{
+    var vm = _viewModel;
+
+    @if (vm.HasSessionContext)
+    {
+        <nav class="board-nav">
+            <a href="/session" class="nav-back">&larr; Back to session</a>
+            <div class="nav-arrows">
+                <button @onclick="NavigatePrev" disabled="@(vm.PrevBoardNumber is null)">
+                    &larr; Previous board
+                </button>
+                <button @onclick="NavigateNext" disabled="@(vm.NextBoardNumber is null)">
+                    Next board &rarr;
+                </button>
+            </div>
+        </nav>
+    }
+
+    <h1>Board @vm.BoardNumber</h1>
+
+    <HandDiagram Hands="@vm.Hands"
+                 BoardNumber="@vm.BoardNumber"
+                 DealerLabel="@vm.DealerLabel"
+                 VulnerabilityLabel="@vm.VulnerabilityLabel" />
+
+    <section class="board-detail-info">
+        <div class="detail-row">
+            <span class="detail-label">Contract</span>
+            <span class="detail-value">
+                @if (vm.IsPassedOut)
+                {
+                    <text>Passed out</text>
+                }
+                else
+                {
+                    @(vm.ContractDisplay ?? "N/A")
+                }
+            </span>
+        </div>
+
+        <div class="detail-row">
+            <span class="detail-label">Par</span>
+            <span class="detail-value">
+                @if (vm.AnalysisFailed)
+                {
+                    <text>Analysis unavailable</text>
+                }
+                else
+                {
+                    @(vm.ParDisplay ?? "Par: Pass (0)")
+                }
+            </span>
+        </div>
+
+        <div class="detail-row">
+            <span class="detail-label">IMP Delta</span>
+            <span class="detail-value">
+                @if (vm.AnalysisFailed)
+                {
+                    <text>Analysis unavailable</text>
+                }
+                else if (vm.ImpDelta is null)
+                {
+                    <text>N/A</text>
+                }
+                else
+                {
+                    <span class="delta-value @DeltaCssClass(vm.ImpDelta.Value)">
+                        @DeltaText(vm.ImpDelta.Value)
+                    </span>
+                }
+            </span>
+        </div>
+    </section>
+}
+
+@code {
+    [Parameter] public int BoardNumber { get; set; }
+
+    private BoardDetailViewModel? _viewModel;
+
+    protected override void OnParametersSet()
+    {
+        _viewModel = SessionStateService.GetBoardDetail(BoardNumber);
+    }
+
+    private void NavigatePrev()
+    {
+        if (_viewModel?.PrevBoardNumber is int prev)
+            Navigation.NavigateTo($"/boards/{prev}");
+    }
+
+    private void NavigateNext()
+    {
+        if (_viewModel?.NextBoardNumber is int next)
+            Navigation.NavigateTo($"/boards/{next}");
+    }
+
+    private static string DeltaCssClass(int delta) => delta switch
+    {
+        > 0 => "delta-positive",
+        < 0 => "delta-negative",
+        _   => "delta-neutral"
+    };
+
+    private static string DeltaText(int delta) => delta switch
+    {
+        var v when v > 0 => $"+{v}",
+        var v            => $"{v}"
+    };
+}

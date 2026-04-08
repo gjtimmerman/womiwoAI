@@ -1,0 +1,23 @@
+<div class="hand-display">
+    <div class="suit-row"><span class="suit-black">♠</span> @RenderSuit(Hand.Spades)</div>
+    <div class="suit-row"><span class="suit-red">♥</span> @RenderSuit(Hand.Hearts)</div>
+    <div class="suit-row"><span class="suit-red">♦</span> @RenderSuit(Hand.Diamonds)</div>
+    <div class="suit-row"><span class="suit-black">♣</span> @RenderSuit(Hand.Clubs)</div>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public ParsedHand Hand { get; set; } = default!;
+
+    private string RenderSuit(IReadOnlyList<Card> cards) =>
+        cards.Count == 0 ? "---" : string.Join(" ", cards.Select(c => RankChar(c.Rank)));
+
+    private static string RankChar(Rank rank) => rank switch
+    {
+        Rank.Ace   => "A",
+        Rank.King  => "K",
+        Rank.Queen => "Q",
+        Rank.Jack  => "J",
+        Rank.Ten   => "T",
+        _          => ((int)rank).ToString()
+    };
+}

@@ -1,0 +1,134 @@
+@page "/"
+@page "/upload"
+@using BridgeGameCalculator.Shared.Models
+@using BridgeGameCalculator.Shared.Json
+@using BridgeGameCalculator.Client.Services
+@inject HttpClient Http
+@inject SessionState SessionState
+@inject NavigationManager Navigation
+
+<h1>BridgeGameCalculator</h1>
+<h2>Upload PBN File</h2>
+
+<div class="upload-area">
+    <p>Select a <strong>.pbn</strong> file from a tournament session (up to 1 MB).</p>
+    <InputFile OnChange="HandleFileSelected" accept=".pbn" disabled="@_isLoading" />
+</div>
+
+@if (_isLoading)
+{
+    <div class="loading-indicator" role="status">
+        <p>@_loadingMessage</p>
+    </div>
+}
+
+@if (_errorMessage is not null)
+{
+    <div class="error-message" role="alert">
+        <strong>Upload failed:</strong> @_errorMessage
+    </div>
+}
+
+@if (_session is not null && !_isLoading)
+{
+    <div class="upload-success">
+        <p>&#10003; <strong>@_session.Boards.Count boards</strong> loaded from
+           <em>@_session.SourceFile</em>.</p>
+        <button @onclick="AnalyseAndNavigate">Analyse session &rarr;</button>
+    </div>
+}
+
+@code {
+    private bool      _isLoading;
+    private string    _loadingMessage = "Parsing boards\u2026";
+    private string?   _errorMessage;
+    private Session?  _session;
+
+    private async Task HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        _errorMessage = null;
+        _session      = null;
+        _isLoading    = true;
+
+        try
+        {
+            var file = e.File;
+
+            if (!file.Name.EndsWith(".pbn", StringComparison.OrdinalIgnoreCase))
+            {
+                _errorMessage = "Only .pbn files are supported. Please select a valid PBN file.";
+                return;
+            }
+
+            if (file.Size > 1_048_576)
+            {
+                _errorMessage = "File exceeds the 1 MB size limit.";
+                return;
+            }
+
+            using var content      = new MultipartFormDataContent();
+            using var stream       = file.OpenReadStream(maxAllowedSize: 1_048_576);
+            using var streamContent = new StreamContent(stream);
+            content.Add(streamContent, "file", file.Name);
+
+            var response = await Http.PostAsync("/api/sessions", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                _session = await response.Content
+                    .ReadFromJsonAsync<Session>(JsonDefaults.Options);
+                SessionState.IsSingleHandSession = false;
+                SessionState.CurrentSession = _session;
+            }
+            else
+            {
+                var error = await response.Content
+                    .ReadFromJsonAsync<PbnParseError>(JsonDefaults.Options);
+                _errorMessage = error?.Message ?? "An unknown error occurred.";
+            }
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = $"Failed to upload file: {ex.Message}";
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+
+    private async Task AnalyseAndNavigate()
+    {
+        if (_session is null) return;
+
+        _errorMessage = null;
+        _isLoading    = true;
+        _loadingMessage = "Analysing boards\u2026";
+
+        try
+        {
+            var response = await Http.PostAsJsonAsync("/api/analyze", _session,
+                JsonDefaults.Options);
+
+            if (response.IsSuccessStatusCode)
+            {
+                SessionState.CurrentAnalysis = await response.Content
+                    .ReadFromJsonAsync<SessionAnalysisResult>(JsonDefaults.Options);
+                Navigation.NavigateTo("/session");
+            }
+            else
+            {
+                _errorMessage = "Analysis failed. Please try again.";
+            }
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = $"Analysis failed: {ex.Message}";
+        }
+        finally
+        {
+            _isLoading = false;
+            _loadingMessage = "Parsing boards\u2026";
+        }
+    }
+}
