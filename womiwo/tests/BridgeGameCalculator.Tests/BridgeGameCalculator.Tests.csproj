@@ -7,6 +7,7 @@
 
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
+    <BaseOutputPath>C:\Users\gertt\womiwoAI\womiwo\tests\BridgeGameCalculator.Tests\bin\Debug\net10.0</BaseOutputPath>
   </PropertyGroup>
 
   <ItemGroup>

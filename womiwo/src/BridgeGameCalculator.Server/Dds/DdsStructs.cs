@@ -1,5 +1,6 @@
 namespace BridgeGameCalculator.Server.Dds;
 
+using BridgeGameCalculator.Shared.Models;
 using System.Runtime.InteropServices;
 
 /// <summary>DDS library constants.</summary>
@@ -13,6 +14,8 @@ internal static class DdsConstants
 
     /// <summary>Number of seats (N, E, S, W).</summary>
     public const int DdsHands = 4;
+
+    public const int NumberOfTricks = 13;
 }
 
 /// <summary>
@@ -97,4 +100,58 @@ internal struct AllParResults
 {
     [MarshalAs(UnmanagedType.ByValArray, SizeConst = DdsConstants.MaxNoOfBoards * 5)]
     public ParResultsDealer[] PresResults;
+}
+
+[StructLayout(LayoutKind.Sequential)]
+internal struct FutureTricks
+{
+    public int nodes;
+    public int cards;
+    [MarshalAs(UnmanagedType.ByValArray, SizeConst = DdsConstants.NumberOfTricks)]
+    public int [] suit;
+    [MarshalAs(UnmanagedType.ByValArray, SizeConst = DdsConstants.NumberOfTricks)]
+    public int [] rank;
+    [MarshalAs(UnmanagedType.ByValArray, SizeConst = DdsConstants.NumberOfTricks)]
+    public int [] equals;
+    [MarshalAs(UnmanagedType.ByValArray, SizeConst = DdsConstants.NumberOfTricks)]
+    public int[] score;
+}
+
+[StructLayout(LayoutKind.Sequential)]
+internal struct SolvedBoardsInterop
+{
+    public int no_of_boards;
+
+    [MarshalAs(UnmanagedType.ByValArray, SizeConst = DdsConstants.MaxNoOfBoards)]
+    public FutureTricks[] solved_board;
+};
+
+[StructLayout(LayoutKind.Sequential)]
+
+internal struct BoardsPBN
+{
+    public int numberOfBoards;
+    [MarshalAs(UnmanagedType.ByValArray, SizeConst = DdsConstants.MaxNoOfBoards)]
+    public DealPBN[] deals;
+    [MarshalAs(UnmanagedType.ByValArray, SizeConst = DdsConstants.MaxNoOfBoards)]
+    public int[] target;
+    [MarshalAs(UnmanagedType.ByValArray, SizeConst = DdsConstants.MaxNoOfBoards)]
+    public int[] solutions;
+    [MarshalAs(UnmanagedType.ByValArray, SizeConst = DdsConstants.MaxNoOfBoards)]
+    public int[] mode;
+
+}
+
+[StructLayout(LayoutKind.Sequential)]
+
+internal struct DealPBN
+{
+    public int trump;
+    public int first;
+    [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
+    public int[] currentTrickSuit;
+    [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
+    public int[] currentTrickRank;
+    public string remainingCards;
+
 }

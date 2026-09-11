@@ -65,4 +65,8 @@ internal static class DdsInterop
     public static extern void ErrorMessage(
         int returnCode,
         [MarshalAs(UnmanagedType.LPStr)] StringBuilder message);
+
+    [DllImport(DdsLibrary, CallingConvention = CallingConvention.StdCall, EntryPoint = "SolveAllBoards")]
+
+    public static extern void SolveAllBoards(BoardsPBN bop, SolvedBoardsInterop solvedp);
 }
