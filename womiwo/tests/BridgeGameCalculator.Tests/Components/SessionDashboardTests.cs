@@ -16,7 +16,7 @@ public sealed class SessionDashboardTests : TestContext
     [Fact]
     public void Shows_empty_state_when_no_session()
     {
-        var cut = RenderComponent<SessionDashboard>();
+        var cut = Render<SessionDashboard>();
 
         Assert.Contains("No session loaded", cut.Markup);
         Assert.Contains("/", cut.Markup);
@@ -39,7 +39,7 @@ public sealed class SessionDashboardTests : TestContext
 
         Services.GetRequiredService<SessionState>().CurrentAnalysis = analysis;
 
-        var cut = RenderComponent<SessionDashboard>();
+        var cut = Render<SessionDashboard>();
 
         Assert.Contains("session.pbn", cut.Markup);
         cut.FindAll("tbody tr").Count.Equals(1);
@@ -64,7 +64,7 @@ public sealed class SessionDashboardTests : TestContext
 
         Services.GetRequiredService<SessionState>().CurrentAnalysis = analysis;
 
-        var cut = RenderComponent<SessionDashboard>();
+        var cut = Render<SessionDashboard>();
 
         Assert.Equal(3, cut.FindAll("tbody tr").Count);
     }

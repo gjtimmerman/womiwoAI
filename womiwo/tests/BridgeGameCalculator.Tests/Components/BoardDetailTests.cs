@@ -61,8 +61,8 @@ public sealed class BoardDetailTests : TestContext
     {
         Services.AddSingleton<ISessionStateService>(new FakeSessionStateService());
 
-        var cut = RenderComponent<BoardDetail>(p => p.Add(x => x.BoardNumber, 99));
-
+        var cut = Render<BoardDetail>(p => p.Add(x => x.BoardNumber, 99));
+        
         Assert.Contains("not found", cut.Markup, StringComparison.OrdinalIgnoreCase);
     }
 
@@ -71,7 +71,7 @@ public sealed class BoardDetailTests : TestContext
     {
         SetupFake(MakeViewModel(prevBoardNumber: 4, nextBoardNumber: 6));
 
-        var cut = RenderComponent<BoardDetail>(p => p.Add(x => x.BoardNumber, 5));
+        var cut = Render<BoardDetail>(p => p.Add(x => x.BoardNumber, 5));
 
         Assert.NotNull(cut.Find(".board-nav"));
         Assert.Contains("Back to session", cut.Markup);
@@ -82,7 +82,7 @@ public sealed class BoardDetailTests : TestContext
     {
         SetupFake(MakeViewModel(hasSessionContext: false));
 
-        var cut = RenderComponent<BoardDetail>(p => p.Add(x => x.BoardNumber, 5));
+        var cut = Render<BoardDetail>(p => p.Add(x => x.BoardNumber, 5));
 
         Assert.Throws<Bunit.ElementNotFoundException>(() => cut.Find(".board-nav"));
     }
@@ -92,7 +92,7 @@ public sealed class BoardDetailTests : TestContext
     {
         SetupFake(MakeViewModel(prevBoardNumber: null, nextBoardNumber: 6));
 
-        var cut     = RenderComponent<BoardDetail>(p => p.Add(x => x.BoardNumber, 5));
+        var cut     = Render<BoardDetail>(p => p.Add(x => x.BoardNumber, 5));
         var buttons = cut.FindAll(".nav-arrows button");
 
         Assert.True(buttons[0].HasAttribute("disabled"));   // ← Prev
@@ -104,7 +104,7 @@ public sealed class BoardDetailTests : TestContext
     {
         SetupFake(MakeViewModel(prevBoardNumber: 4, nextBoardNumber: null));
 
-        var cut     = RenderComponent<BoardDetail>(p => p.Add(x => x.BoardNumber, 5));
+        var cut     = Render<BoardDetail>(p => p.Add(x => x.BoardNumber, 5));
         var buttons = cut.FindAll(".nav-arrows button");
 
         Assert.False(buttons[0].HasAttribute("disabled"));  // ← Prev
@@ -116,7 +116,7 @@ public sealed class BoardDetailTests : TestContext
     {
         SetupFake(MakeViewModel(isPassedOut: true, contractDisplay: null, parDisplay: "Par: Pass (0)"));
 
-        var cut = RenderComponent<BoardDetail>(p => p.Add(x => x.BoardNumber, 5));
+        var cut = Render<BoardDetail>(p => p.Add(x => x.BoardNumber, 5));
 
         Assert.Contains("Passed out", cut.Markup);
     }
@@ -126,7 +126,7 @@ public sealed class BoardDetailTests : TestContext
     {
         SetupFake(MakeViewModel(impDelta: 0));
 
-        var cut = RenderComponent<BoardDetail>(p => p.Add(x => x.BoardNumber, 5));
+        var cut = Render<BoardDetail>(p => p.Add(x => x.BoardNumber, 5));
 
         Assert.Contains("3NT by North", cut.Markup);
         Assert.Contains("Par:", cut.Markup);
@@ -137,7 +137,7 @@ public sealed class BoardDetailTests : TestContext
     {
         SetupFake(MakeViewModel(impDelta: 3));
 
-        var cut = RenderComponent<BoardDetail>(p => p.Add(x => x.BoardNumber, 5));
+        var cut = Render<BoardDetail>(p => p.Add(x => x.BoardNumber, 5));
 
         var delta = cut.Find(".delta-positive");
         Assert.Contains("+3", delta.TextContent);
@@ -148,7 +148,7 @@ public sealed class BoardDetailTests : TestContext
     {
         SetupFake(MakeViewModel(impDelta: -5));
 
-        var cut = RenderComponent<BoardDetail>(p => p.Add(x => x.BoardNumber, 5));
+        var cut = Render<BoardDetail>(p => p.Add(x => x.BoardNumber, 5));
 
         var delta = cut.Find(".delta-negative");
         Assert.Contains("-5", delta.TextContent);
@@ -159,7 +159,7 @@ public sealed class BoardDetailTests : TestContext
     {
         SetupFake(MakeViewModel(impDelta: 0));
 
-        var cut = RenderComponent<BoardDetail>(p => p.Add(x => x.BoardNumber, 5));
+        var cut = Render<BoardDetail>(p => p.Add(x => x.BoardNumber, 5));
 
         Assert.NotNull(cut.Find(".delta-neutral"));
     }
@@ -169,7 +169,7 @@ public sealed class BoardDetailTests : TestContext
     {
         SetupFake(MakeViewModel(impDelta: null));
 
-        var cut = RenderComponent<BoardDetail>(p => p.Add(x => x.BoardNumber, 5));
+        var cut = Render<BoardDetail>(p => p.Add(x => x.BoardNumber, 5));
 
         Assert.Contains("N/A", cut.Markup);
     }
@@ -179,7 +179,7 @@ public sealed class BoardDetailTests : TestContext
     {
         SetupFake(MakeViewModel(analysisFailed: true, parDisplay: null, impDelta: null));
 
-        var cut = RenderComponent<BoardDetail>(p => p.Add(x => x.BoardNumber, 5));
+        var cut = Render<BoardDetail>(p => p.Add(x => x.BoardNumber, 5));
 
         Assert.Contains("Analysis unavailable", cut.Markup);
     }
@@ -190,7 +190,7 @@ public sealed class BoardDetailTests : TestContext
         SetupFake(MakeViewModel(prevBoardNumber: 4, nextBoardNumber: 6));
         var navMan = Services.GetRequiredService<NavigationManager>();
 
-        var cut = RenderComponent<BoardDetail>(p => p.Add(x => x.BoardNumber, 5));
+        var cut = Render<BoardDetail>(p => p.Add(x => x.BoardNumber, 5));
         var buttons = cut.FindAll(".nav-arrows button");
         buttons[1].Click();  // Next →
 
@@ -203,7 +203,7 @@ public sealed class BoardDetailTests : TestContext
         SetupFake(MakeViewModel(prevBoardNumber: 4, nextBoardNumber: 6));
         var navMan = Services.GetRequiredService<NavigationManager>();
 
-        var cut = RenderComponent<BoardDetail>(p => p.Add(x => x.BoardNumber, 5));
+        var cut = Render<BoardDetail>(p => p.Add(x => x.BoardNumber, 5));
         var buttons = cut.FindAll(".nav-arrows button");
         buttons[0].Click();  // ← Prev
 

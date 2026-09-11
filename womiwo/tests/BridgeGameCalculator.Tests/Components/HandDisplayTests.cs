@@ -20,7 +20,7 @@ public sealed class HandDisplayTests : TestContext
     [Fact]
     public void Renders_four_suit_rows()
     {
-        var cut = RenderComponent<HandDisplay>(p => p.Add(x => x.Hand, MakeHand()));
+        var cut = Render<HandDisplay>(p => p.Add(x => x.Hand, MakeHand()));
 
         Assert.Equal(4, cut.FindAll(".suit-row").Count);
     }
@@ -28,7 +28,7 @@ public sealed class HandDisplayTests : TestContext
     [Fact]
     public void Spades_and_clubs_have_suit_black_class()
     {
-        var cut = RenderComponent<HandDisplay>(p => p.Add(x => x.Hand, MakeHand()));
+        var cut = Render<HandDisplay>(p => p.Add(x => x.Hand, MakeHand()));
 
         var rows = cut.FindAll(".suit-row");
         Assert.Contains("suit-black", rows[0].InnerHtml);  // ♠ row
@@ -38,7 +38,7 @@ public sealed class HandDisplayTests : TestContext
     [Fact]
     public void Hearts_and_diamonds_have_suit_red_class()
     {
-        var cut = RenderComponent<HandDisplay>(p => p.Add(x => x.Hand, MakeHand()));
+        var cut = Render<HandDisplay>(p => p.Add(x => x.Hand, MakeHand()));
 
         var rows = cut.FindAll(".suit-row");
         Assert.Contains("suit-red", rows[1].InnerHtml);  // ♥ row
@@ -49,7 +49,7 @@ public sealed class HandDisplayTests : TestContext
     public void Void_suit_renders_dashes()
     {
         var hand = MakeHand(diamonds: Array.Empty<Card>());
-        var cut  = RenderComponent<HandDisplay>(p => p.Add(x => x.Hand, hand));
+        var cut  = Render<HandDisplay>(p => p.Add(x => x.Hand, hand));
 
         var rows = cut.FindAll(".suit-row");
         Assert.Contains("---", rows[2].TextContent);
@@ -65,7 +65,7 @@ public sealed class HandDisplayTests : TestContext
             new Card(Suit.Spades, Rank.Two),
         ];
         var hand = MakeHand(spades: spades);
-        var cut  = RenderComponent<HandDisplay>(p => p.Add(x => x.Hand, hand));
+        var cut  = Render<HandDisplay>(p => p.Add(x => x.Hand, hand));
 
         var spadesRow = cut.FindAll(".suit-row")[0].TextContent;
         int idxA = spadesRow.IndexOf('A');
@@ -80,7 +80,7 @@ public sealed class HandDisplayTests : TestContext
     {
         IReadOnlyList<Card> spades = [new Card(Suit.Spades, Rank.Ten)];
         var hand = MakeHand(spades: spades);
-        var cut  = RenderComponent<HandDisplay>(p => p.Add(x => x.Hand, hand));
+        var cut  = Render<HandDisplay>(p => p.Add(x => x.Hand, hand));
 
         var spadesRow = cut.FindAll(".suit-row")[0].TextContent;
         Assert.Contains("T", spadesRow);

@@ -22,7 +22,7 @@ public sealed class BoardRowTests : TestContext
     public void Renders_all_columns()
     {
         var board = MakeBoard(impDelta: 3, actualScore: 400);
-        var cut = RenderComponent<BoardRow>(p => p.Add(x => x.Board, board));
+        var cut = Render<BoardRow>(p => p.Add(x => x.Board, board));
 
         var cells = cut.FindAll("td");
         Assert.Equal(8, cells.Count);
@@ -32,7 +32,7 @@ public sealed class BoardRowTests : TestContext
     public void Shows_pass_when_contract_null()
     {
         var board = new BoardResult(1, "None", null, null, null, null, 0, null);
-        var cut = RenderComponent<BoardRow>(p => p.Add(x => x.Board, board));
+        var cut = Render<BoardRow>(p => p.Add(x => x.Board, board));
 
         var cells = cut.FindAll("td");
         Assert.Equal("Pass", cells[2].TextContent);  // ContractPlayed column
@@ -49,7 +49,7 @@ public sealed class BoardRowTests : TestContext
     public void Delta_cell_has_correct_css_and_text(int impDelta, string expectedCss, string expectedText)
     {
         var board = MakeBoard(impDelta: impDelta, actualScore: 400);
-        var cut = RenderComponent<BoardRow>(p => p.Add(x => x.Board, board));
+        var cut = Render<BoardRow>(p => p.Add(x => x.Board, board));
 
         var deltaCell = cut.FindAll("td")[7];
         Assert.Contains(expectedCss, deltaCell.ClassName ?? "");
@@ -62,7 +62,7 @@ public sealed class BoardRowTests : TestContext
         var board = MakeBoard(impDelta: 0, actualScore: 400);
         int? clicked = null;
 
-        var cut = RenderComponent<BoardRow>(p =>
+        var cut = Render<BoardRow>(p =>
         {
             p.Add(x => x.Board, board);
             p.Add(x => x.OnBoardClicked, EventCallback.Factory.Create<int>(this, n => clicked = n));

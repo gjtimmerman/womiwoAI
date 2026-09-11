@@ -27,6 +27,8 @@ bld/
 project.lock.json
 project.fragment.lock.json
 artifacts/
+DesignTimeBuild
+
 
 # ASP.NET Scaffolding
 ScaffoldingReadMe.txt
@@ -40,6 +42,9 @@ ScaffoldingReadMe.txt
 ~$*
 *~
 CodeCoverage/
+CopilotIndices/
+copilot-chat
+.vs
 
 # MSBuild Binary and Structured Log
 *.binlog

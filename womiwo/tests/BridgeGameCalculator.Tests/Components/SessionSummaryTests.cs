@@ -22,7 +22,7 @@ public sealed class SessionSummaryTests : TestContext
     public void Renders_board_count()
     {
         var analysis = MakeAnalysis(totalImps: 5, pos: 3, neg: 1, par: 2);
-        var cut = RenderComponent<SessionSummary>(p => p.Add(x => x.Analysis, analysis));
+        var cut = Render<SessionSummary>(p => p.Add(x => x.Analysis, analysis));
 
         Assert.Contains("6", cut.Markup);
     }
@@ -34,7 +34,7 @@ public sealed class SessionSummaryTests : TestContext
     public void Total_imp_value_has_correct_class_and_text(int totalImps, string expectedCss, string expectedText)
     {
         var analysis = MakeAnalysis(totalImps: totalImps, pos: 1, neg: 1, par: 0);
-        var cut = RenderComponent<SessionSummary>(p => p.Add(x => x.Analysis, analysis));
+        var cut = Render<SessionSummary>(p => p.Add(x => x.Analysis, analysis));
 
         var valueSpans = cut.FindAll(".summary-value");
         var totalSpan  = valueSpans[0];  // first summary-value is Total IMPs
@@ -47,7 +47,7 @@ public sealed class SessionSummaryTests : TestContext
     public void Renders_positive_negative_par_counts()
     {
         var analysis = MakeAnalysis(totalImps: 3, pos: 5, neg: 2, par: 1);
-        var cut = RenderComponent<SessionSummary>(p => p.Add(x => x.Analysis, analysis));
+        var cut = Render<SessionSummary>(p => p.Add(x => x.Analysis, analysis));
 
         var valueSpans = cut.FindAll(".summary-value");
         // Order: TotalImps, BoardCount, Positive, Negative, Par

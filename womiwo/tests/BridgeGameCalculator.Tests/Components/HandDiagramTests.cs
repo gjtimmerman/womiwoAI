@@ -20,7 +20,7 @@ public sealed class HandDiagramTests : TestContext
     [Fact]
     public void Renders_four_HandDisplay_components()
     {
-        var cut = RenderComponent<HandDiagram>(p =>
+        var cut = Render<HandDiagram>(p =>
         {
             p.Add(x => x.Hands,              FourEmptyHands());
             p.Add(x => x.BoardNumber,        3);
@@ -34,7 +34,7 @@ public sealed class HandDiagramTests : TestContext
     [Fact]
     public void Renders_board_metadata_in_center()
     {
-        var cut = RenderComponent<HandDiagram>(p =>
+        var cut = Render<HandDiagram>(p =>
         {
             p.Add(x => x.Hands,              FourEmptyHands());
             p.Add(x => x.BoardNumber,        7);
@@ -51,7 +51,7 @@ public sealed class HandDiagramTests : TestContext
     [Fact]
     public void Has_hand_diagram_css_class()
     {
-        var cut = RenderComponent<HandDiagram>(p =>
+        var cut = Render<HandDiagram>(p =>
         {
             p.Add(x => x.Hands,              FourEmptyHands());
             p.Add(x => x.BoardNumber,        1);

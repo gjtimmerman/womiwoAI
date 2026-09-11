@@ -9,7 +9,7 @@ public sealed class HandInputTests : TestContext
     [Fact]
     public void Renders_Label_ForSeat()
     {
-        var cut = RenderComponent<HandInput>(p =>
+        var cut = Render<HandInput>(p =>
         {
             p.Add(x => x.Seat,  Seat.North);
             p.Add(x => x.Value, "");
@@ -25,7 +25,7 @@ public sealed class HandInputTests : TestContext
     [InlineData(Seat.West,  "West")]
     public void Renders_Correct_Label_For_Each_Seat(Seat seat, string expectedLabel)
     {
-        var cut = RenderComponent<HandInput>(p =>
+        var cut = Render<HandInput>(p =>
         {
             p.Add(x => x.Seat,  seat);
             p.Add(x => x.Value, "");
@@ -37,7 +37,7 @@ public sealed class HandInputTests : TestContext
     [Fact]
     public void Shows_ErrorMessage_When_Set()
     {
-        var cut = RenderComponent<HandInput>(p =>
+        var cut = Render<HandInput>(p =>
         {
             p.Add(x => x.Seat,         Seat.South);
             p.Add(x => x.Value,        "");
@@ -51,7 +51,7 @@ public sealed class HandInputTests : TestContext
     [Fact]
     public void Does_Not_Show_ErrorMessage_When_Null()
     {
-        var cut = RenderComponent<HandInput>(p =>
+        var cut = Render<HandInput>(p =>
         {
             p.Add(x => x.Seat,         Seat.West);
             p.Add(x => x.Value,        "");
@@ -64,7 +64,7 @@ public sealed class HandInputTests : TestContext
     [Fact]
     public void Input_ErrorClass_When_ErrorMessage_Set()
     {
-        var cut = RenderComponent<HandInput>(p =>
+        var cut = Render<HandInput>(p =>
         {
             p.Add(x => x.Seat,         Seat.East);
             p.Add(x => x.Value,        "");
@@ -79,7 +79,7 @@ public sealed class HandInputTests : TestContext
     public void ValueChanged_Fires_On_Change()
     {
         string? received = null;
-        var cut = RenderComponent<HandInput>(p =>
+        var cut = Render<HandInput>(p =>
         {
             p.Add(x => x.Seat,         Seat.North);
             p.Add(x => x.Value,        "");
@@ -94,7 +94,7 @@ public sealed class HandInputTests : TestContext
     [Fact]
     public void Disabled_Input_Has_Disabled_Attribute()
     {
-        var cut = RenderComponent<HandInput>(p =>
+        var cut = Render<HandInput>(p =>
         {
             p.Add(x => x.Seat,     Seat.North);
             p.Add(x => x.Value,    "");

@@ -77,7 +77,7 @@ public sealed class DdsAnalysisService : IDdsAnalysisService
         // --- Per-board par calculation ---
         for (int i = 0; i < count; i++)
         {
-            cancellationToken.ThrowIfCancellationRequested();
+              cancellationToken.ThrowIfCancellationRequested();
             results[i] = ComputeParForBoard(boards[i], ref tablesRes.Results[i]);
         }
 

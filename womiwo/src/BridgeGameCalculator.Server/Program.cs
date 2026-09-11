@@ -9,6 +9,25 @@ using BridgeGameCalculator.Shared.Validation;
 var builder = WebApplication.CreateBuilder(args);
 
 // --- Services ---
+var clientOrigins = builder.Configuration.GetSection("Cors:Origins").Get<string[]>() ?? [];
+
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        if (clientOrigins.Length == 0)
+        {
+            policy.AllowAnyOrigin()
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+            return;
+        }
+
+        policy.WithOrigins(clientOrigins)
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
 builder.Services.AddSingleton<PbnParser>();
 builder.Services.AddSingleton<IDdsAnalysisService, DdsAnalysisService>();
 builder.Services.AddSingleton<DeltaCalculationService>();
@@ -24,11 +43,12 @@ var app = builder.Build();
 // --- Middleware ---
 app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
+app.UseCors();
 
 // --- API Endpoints ---
 app.MapPost("/api/sessions", async (IFormFile file, PbnParser parser) =>
 {
-    if (file.Length == 0)
+     if (file.Length == 0)
         return Results.UnprocessableEntity(
             new PbnParseError("The uploaded file is empty."));
 
