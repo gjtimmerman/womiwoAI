@@ -12,7 +12,7 @@ using System.Text;
 /// </summary>
 internal static class DdsInterop
 {
-    private const string DdsLibrary = "dds";
+    private const string DdsLibrary = "C:\\Users\\gertt\\womiwoAI\\womiwo\\tests\\BridgeGameCalculator.Tests\\bin\\Debug\\net10.0\\dds.dll";
 
     /// <summary>
     /// Set maximum threads the DDS library may use internally.
@@ -68,5 +68,5 @@ internal static class DdsInterop
 
     [DllImport(DdsLibrary, CallingConvention = CallingConvention.StdCall, EntryPoint = "SolveAllBoards")]
 
-    public static extern void SolveAllBoards(BoardsPBN bop, SolvedBoardsInterop solvedp);
+    public static extern int SolveAllBoards(ref BoardsPBN bop, ref SolvedBoardsInterop solvedp);
 }

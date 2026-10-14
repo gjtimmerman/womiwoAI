@@ -10,7 +10,7 @@ namespace BridgeGameCalculator.Shared.Models
         public int first;
         public int[] currentTrickSuit;
         public int[] currentTrickRank;
-        public string remainingCards;
+        public char[] remainingCards;
         
     }
 }

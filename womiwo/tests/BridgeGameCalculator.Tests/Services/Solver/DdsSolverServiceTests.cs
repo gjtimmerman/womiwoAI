@@ -7,6 +7,11 @@ namespace BridgeGameCalculator.Tests.Services.Solver
 {
     public class DdsSolverServiceTests
     {
+        public DdsSolverServiceTests()
+        {
+//            var workFolderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"bin/Debug/net10.0");
+//            Directory.SetCurrentDirectory(Path.GetFullPath(workFolderPath));
+        }
         [Fact]
         public async Task TestDdsSolverService_NormalHand()
         {
@@ -19,7 +24,9 @@ namespace BridgeGameCalculator.Tests.Services.Solver
             boardPbn.deals[0].first = 0;
             boardPbn.deals[0].currentTrickRank = new int[3];
             boardPbn.deals[0].currentTrickSuit = new int[3];
-            boardPbn.deals[0].remainingCards = "N:T642.K9.AKT62.82 Q87.T7632.J83.74 AJ3.J85.Q7.KQJT5 K95.AQ4.954.A963";
+            char[] charArray = "N:T642.K9.AKT62.82 Q87.T7632.J83.74 AJ3.J85.Q7.KQJT5 K95.AQ4.954.A963".ToCharArray(); ;
+            boardPbn.deals[0].remainingCards = new char[80];
+            Array.Copy(charArray, boardPbn.deals[0].remainingCards, charArray.Length);
             boardPbn.solutions = new int[boardPbn.numberOfBoards];
             boardPbn.target = new int [boardPbn.numberOfBoards];
             boardPbn.mode = new int [boardPbn.numberOfBoards];

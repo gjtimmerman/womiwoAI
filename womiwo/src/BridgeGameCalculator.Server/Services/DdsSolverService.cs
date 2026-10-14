@@ -1,5 +1,6 @@
 ﻿using BridgeGameCalculator.Server.Dds;
-using BridgeGameCalculator.Shared.Models;
+using System.Text;
+using Model = BridgeGameCalculator.Shared.Models;
 
 
 namespace BridgeGameCalculator.Server.Services
@@ -12,14 +13,14 @@ namespace BridgeGameCalculator.Server.Services
             _logger = logger;
         }
 
-        public async Task<BoardSolveResult> SolveSessionAsync(
-            BoardPbn boards,
+        public async Task<Model.BoardSolveResult> SolveSessionAsync(
+            Model.BoardPbn boards,
             CancellationToken cancellationToken = default)
         {
             return await Task.Run(() => SolveSessionCore(boards, cancellationToken));
         }
 
-        private BoardSolveResult SolveSessionCore(BoardPbn boards, CancellationToken cancellationToken)
+        private Model.BoardSolveResult SolveSessionCore(Model.BoardPbn boards, CancellationToken cancellationToken)
         { 
             BoardsPBN boardsPBN = new();
             boardsPBN.numberOfBoards = boards.numberOfBoards;
@@ -43,6 +44,7 @@ namespace BridgeGameCalculator.Server.Services
                 }
 
                 boardsPBN.deals[i].remainingCards = boards.deals[i].remainingCards;
+                boardsPBN.solutions[i] = 1;
             }
             SolvedBoardsInterop solvedBoards = new();
             solvedBoards.solved_board = new Dds.FutureTricks[DdsConstants.MaxNoOfBoards];
@@ -53,13 +55,29 @@ namespace BridgeGameCalculator.Server.Services
                 solvedBoards.solved_board[i].equals = new int[DdsConstants.NumberOfTricks];
                 solvedBoards.solved_board[i].score = new int[DdsConstants.NumberOfTricks];
             }
-            DdsInterop.SolveAllBoards(boardsPBN, solvedBoards);
-            BoardSolveResult boardSolveResult = new BoardSolveResult();
+            int result = DdsInterop.SolveAllBoards(ref boardsPBN, ref solvedBoards);
+            Model.FutureTricks [] futTricks = new Model.FutureTricks[solvedBoards.no_of_boards];
+            for (int i = 0; i < futTricks.Length; i++)
+            {
+                futTricks[i] = new Model.FutureTricks()
+                {
+                    Nodes = solvedBoards.solved_board[i].nodes,
+                    Cards = solvedBoards.solved_board[i].cards,
+                    Suit = solvedBoards.solved_board[i].suit,
+                    Rank = solvedBoards.solved_board[i].rank,
+                    Equals = solvedBoards.solved_board[i].equals,
+                    Score = solvedBoards.solved_board[i].score
+                };
+            }
+            StringBuilder message = new StringBuilder();
+            DdsInterop.ErrorMessage(result, message);
+            Model.BoardSolveResult boardSolveResult = new Model.BoardSolveResult() { IsSuccess = result == 1, solvedBoards =  new Model.SolvedBoards() { NumberOfBoards = solvedBoards.no_of_boards, futureTricks = futTricks }, ErrorMessage = message.ToString() };
+            
             return boardSolveResult;
         }
 
-        public Task<BoardSolveResult> SolveBoardAsync(
-            BoardPbn board,
+        public Task<Model.BoardSolveResult> SolveBoardAsync(
+            Model.BoardPbn board,
             CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();

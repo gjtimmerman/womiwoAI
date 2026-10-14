@@ -152,6 +152,7 @@ internal struct DealPBN
     public int[] currentTrickSuit;
     [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
     public int[] currentTrickRank;
-    public string remainingCards;
+    [MarshalAs(UnmanagedType.ByValArray, SizeConst = 80)]
+    public char [] remainingCards;
 
 }
