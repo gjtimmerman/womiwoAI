@@ -1,4 +1,5 @@
 ﻿using BridgeGameCalculator.Server.Dds;
+using BridgeGameCalculator.Shared.Dtos;
 using System.Text;
 using Model = BridgeGameCalculator.Shared.Models;
 
@@ -14,36 +15,38 @@ namespace BridgeGameCalculator.Server.Services
         }
 
         public async Task<Model.BoardSolveResult> SolveSessionAsync(
-            Model.BoardPbn boards,
+            SingleHandSolveRequest request,
             CancellationToken cancellationToken = default)
         {
-            return await Task.Run(() => SolveSessionCore(boards, cancellationToken));
+            return await Task.Run(() => SolveSessionCore(request, cancellationToken));
         }
 
-        private Model.BoardSolveResult SolveSessionCore(Model.BoardPbn boards, CancellationToken cancellationToken)
+        private Model.BoardSolveResult SolveSessionCore(SingleHandSolveRequest request, CancellationToken cancellationToken)
         { 
             BoardsPBN boardsPBN = new();
-            boardsPBN.numberOfBoards = boards.numberOfBoards;
+            boardsPBN.numberOfBoards = 1;
             boardsPBN.deals = new DealPBN[DdsConstants.MaxNoOfBoards];
             boardsPBN.solutions = new int[DdsConstants.MaxNoOfBoards];
             boardsPBN.target = new int[DdsConstants.MaxNoOfBoards];
-            for (int i = 0; i < boards.numberOfBoards; i++)
+            for (int i = 0; i < boardsPBN.numberOfBoards; i++)
             {
                 boardsPBN.deals[i] = new DealPBN();
-                boardsPBN.deals[i].trump = boards.deals[i].trump;
-                boardsPBN.deals[i].first = boards.deals[i].first;
+                boardsPBN.deals[i].trump = request.trump;
+                boardsPBN.deals[i].first = request.first;
                 boardsPBN.deals[i].currentTrickRank = new int[3];
                 for (int j = 0; j < 3; j++)
                 {
-                    boardsPBN.deals[i].currentTrickRank[j] = boards.deals[i].currentTrickRank[j];
+                    boardsPBN.deals[i].currentTrickRank[j] = 0;
                 }
                 boardsPBN.deals[i].currentTrickSuit = new int[3];
                 for (int j = 0; j < 3; j++)
                 {
-                    boardsPBN.deals[i].currentTrickSuit[j] = boards.deals[i].currentTrickSuit[j];
+                    boardsPBN.deals[i].currentTrickSuit[j] = 0;
                 }
 
-                boardsPBN.deals[i].remainingCards = boards.deals[i].remainingCards;
+                boardsPBN.deals[i].remainingCards = new char[80];
+                char[] remainingCards = request.remainingCards.ToCharArray();
+                Array.Copy(remainingCards, boardsPBN.deals[i].remainingCards, remainingCards.Length);
                 boardsPBN.solutions[i] = 1;
             }
             SolvedBoardsInterop solvedBoards = new();

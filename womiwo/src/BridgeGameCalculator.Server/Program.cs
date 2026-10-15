@@ -31,6 +31,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddSingleton<PbnParser>();
 builder.Services.AddSingleton<IDdsAnalysisService, DdsAnalysisService>();
 builder.Services.AddSingleton<DeltaCalculationService>();
+builder.Services.AddSingleton<IDdsSolverService, DdsSolverService>();
 builder.Services.ConfigureHttpJsonOptions(options =>
 {
     options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
@@ -42,7 +43,7 @@ var app = builder.Build();
 
 // --- Middleware ---
 app.UseBlazorFrameworkFiles();
-app.UseStaticFiles();
+//app.UseStaticFiles();
 app.UseCors();
 
 // --- API Endpoints ---
@@ -180,7 +181,15 @@ app.MapPost("/api/hands/analyze", async (
 .Produces<SingleHandAnalysisResult>(200)
 .Produces(400);
 
-app.MapFallbackToFile("index.html");
+app.MapPost("/api/solveboard", async (SingleHandSolveRequest request, IDdsSolverService solverService, CancellationToken ct) =>
+{
+    var result = await solverService.SolveSessionAsync(request, ct);
+    return Results.Ok(result);
+})
+.Produces<BoardSolveResult>(200)
+.Produces(400);
+
+// app.MapFallbackToFile("index.html");
 
 app.Run();
 

@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace BridgeGameCalculator.Tests.Components;
 
-public sealed class SessionDashboardTests : TestContext
+public sealed class SessionDashboardTests : BunitContext
 {
     public SessionDashboardTests()
     {

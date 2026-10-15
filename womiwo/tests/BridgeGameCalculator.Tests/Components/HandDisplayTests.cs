@@ -4,7 +4,7 @@ using BridgeGameCalculator.Shared.Models;
 
 namespace BridgeGameCalculator.Tests.Components;
 
-public sealed class HandDisplayTests : TestContext
+public sealed class HandDisplayTests : BunitContext
 {
     private static ParsedHand MakeHand(
         IReadOnlyList<Card>? spades   = null,

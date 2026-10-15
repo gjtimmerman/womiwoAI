@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace BridgeGameCalculator.Tests.Components;
 
-public sealed class BoardRowTests : TestContext
+public sealed class BoardRowTests : BunitContext
 {
     private static BoardResult MakeBoard(int? impDelta = null, int? actualScore = null) =>
         new(

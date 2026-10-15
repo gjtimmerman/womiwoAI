@@ -4,7 +4,7 @@ using BridgeGameCalculator.Shared.Models;
 
 namespace BridgeGameCalculator.Tests.Components;
 
-public sealed class SessionSummaryTests : TestContext
+public sealed class SessionSummaryTests : BunitContext
 {
     private static SessionAnalysisResult MakeAnalysis(int totalImps, int pos, int neg, int par) =>
         new()

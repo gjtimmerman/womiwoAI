@@ -12,7 +12,7 @@ using System.Text;
 /// </summary>
 internal static class DdsInterop
 {
-    private const string DdsLibrary = "C:\\Users\\gertt\\womiwoAI\\womiwo\\tests\\BridgeGameCalculator.Tests\\bin\\Debug\\net10.0\\dds.dll";
+    private const string DdsLibrary = "dds.dll";
 
     /// <summary>
     /// Set maximum threads the DDS library may use internally.

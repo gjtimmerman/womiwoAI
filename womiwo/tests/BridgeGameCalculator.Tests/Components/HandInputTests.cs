@@ -4,7 +4,7 @@ using BridgeGameCalculator.Shared.Models;
 
 namespace BridgeGameCalculator.Tests.Components;
 
-public sealed class HandInputTests : TestContext
+public sealed class HandInputTests : BunitContext
 {
     [Fact]
     public void Renders_Label_ForSeat()

@@ -1,11 +1,12 @@
-﻿using BridgeGameCalculator.Shared.Models;
+﻿using BridgeGameCalculator.Shared.Dtos;
+using BridgeGameCalculator.Shared.Models;
 
 namespace BridgeGameCalculator.Server.Services
 {
     public interface IDdsSolverService
     {
         Task<BoardSolveResult> SolveSessionAsync(
-        BoardPbn boards,
+        SingleHandSolveRequest request,
         CancellationToken cancellationToken = default);
 
         Task<BoardSolveResult> SolveBoardAsync(

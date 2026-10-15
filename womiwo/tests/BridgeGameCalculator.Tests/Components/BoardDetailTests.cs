@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace BridgeGameCalculator.Tests.Components;
 
-public sealed class BoardDetailTests : TestContext
+public sealed class BoardDetailTests : BunitContext
 {
     private static ParsedHand EmptyHand() => new([], [], [], []);
 
