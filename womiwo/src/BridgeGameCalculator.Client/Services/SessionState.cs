@@ -11,6 +11,7 @@ public sealed class SessionState : ISessionStateService
 {
     public Session?               CurrentSession  { get; set; }
     public SessionAnalysisResult? CurrentAnalysis { get; set; }
+    public SolvedBoards ? SolvedBoardsResult { get; set; }
 
     public bool HasSession => CurrentSession is not null && CurrentAnalysis is not null;
 

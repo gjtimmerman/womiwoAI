@@ -43,7 +43,7 @@ var app = builder.Build();
 
 // --- Middleware ---
 app.UseBlazorFrameworkFiles();
-//app.UseStaticFiles();
+app.UseStaticFiles();
 app.UseCors();
 
 // --- API Endpoints ---

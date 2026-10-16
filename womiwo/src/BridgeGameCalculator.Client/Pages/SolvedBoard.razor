@@ -1,0 +1,21 @@
+﻿@page "/solved"
+@inject SessionState _sessionState
+
+<h3>Solved Board</h3>
+
+
+<text>@(_sessionState?.SolvedBoardsResult?.futureTricks[0].Cards)</text>
+<br/>
+<text>@(_sessionState?.SolvedBoardsResult?.futureTricks[0].Nodes)</text>
+<br/>
+@for (int j = 0; j < _sessionState?.SolvedBoardsResult?.futureTricks[0].Cards; j++)
+{
+    <text>@((Suit)_sessionState?.SolvedBoardsResult?.futureTricks[0].Suit[j]!) </text>
+    <text>@((Rank)_sessionState?.SolvedBoardsResult?.futureTricks[0].Rank[j]!)</text>
+    <br/>
+}
+
+
+@code {
+    
+}

@@ -28,6 +28,7 @@ namespace BridgeGameCalculator.Server.Services
             boardsPBN.deals = new DealPBN[DdsConstants.MaxNoOfBoards];
             boardsPBN.solutions = new int[DdsConstants.MaxNoOfBoards];
             boardsPBN.target = new int[DdsConstants.MaxNoOfBoards];
+            boardsPBN.mode = new int[DdsConstants.MaxNoOfBoards];
             for (int i = 0; i < boardsPBN.numberOfBoards; i++)
             {
                 boardsPBN.deals[i] = new DealPBN();
@@ -48,6 +49,8 @@ namespace BridgeGameCalculator.Server.Services
                 char[] remainingCards = request.remainingCards.ToCharArray();
                 Array.Copy(remainingCards, boardsPBN.deals[i].remainingCards, remainingCards.Length);
                 boardsPBN.solutions[i] = 1;
+                boardsPBN.target[i] = 1;
+                boardsPBN.mode[i] = 0;
             }
             SolvedBoardsInterop solvedBoards = new();
             solvedBoards.solved_board = new Dds.FutureTricks[DdsConstants.MaxNoOfBoards];
@@ -55,11 +58,11 @@ namespace BridgeGameCalculator.Server.Services
             {
                 solvedBoards.solved_board[i].rank = new int[DdsConstants.NumberOfTricks];
                 solvedBoards.solved_board[i].suit = new int[DdsConstants.NumberOfTricks];
-                solvedBoards.solved_board[i].equals = new int[DdsConstants.NumberOfTricks];
-                solvedBoards.solved_board[i].score = new int[DdsConstants.NumberOfTricks];
+//                solvedBoards.solved_board[i].equals = new int[DdsConstants.NumberOfTricks];
+//                solvedBoards.solved_board[i].score = new int[DdsConstants.NumberOfTricks];
             }
             int result = DdsInterop.SolveAllBoards(ref boardsPBN, ref solvedBoards);
-            Model.FutureTricks [] futTricks = new Model.FutureTricks[solvedBoards.no_of_boards];
+            Model.FutureTricks [] futTricks = new Model.FutureTricks[solvedBoards.solved_board.Length];
             for (int i = 0; i < futTricks.Length; i++)
             {
                 futTricks[i] = new Model.FutureTricks()
@@ -68,8 +71,8 @@ namespace BridgeGameCalculator.Server.Services
                     Cards = solvedBoards.solved_board[i].cards,
                     Suit = solvedBoards.solved_board[i].suit,
                     Rank = solvedBoards.solved_board[i].rank,
-                    Equals = solvedBoards.solved_board[i].equals,
-                    Score = solvedBoards.solved_board[i].score
+//                    Equals = solvedBoards.solved_board[i].equals,
+//                    Score = solvedBoards.solved_board[i].score
                 };
             }
             StringBuilder message = new StringBuilder();

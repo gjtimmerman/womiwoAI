@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.0.31903.59
+# Visual Studio Version 18
+VisualStudioVersion = 18.11.12306.390
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BridgeGameCalculator.Shared", "BridgeGameCalculator.Shared\BridgeGameCalculator.Shared.csproj", "{39086310-AF20-421E-B5C8-6CCEF6C021D6}"
 EndProject
@@ -15,9 +15,6 @@ Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{39086310-AF20-421E-B5C8-6CCEF6C021D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -36,5 +33,8 @@ Global
 		{66883EC3-C374-42B2-BD96-E3F5588C241F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{66883EC3-C374-42B2-BD96-E3F5588C241F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{66883EC3-C374-42B2-BD96-E3F5588C241F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 EndGlobal
